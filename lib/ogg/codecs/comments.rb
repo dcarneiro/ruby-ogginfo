@@ -23,10 +23,12 @@ module Ogg::Codecs
         unless RUBY_VERSION[0..2] == "1.8"
           comment.force_encoding("UTF-8")
         end
-        ic = Iconv.new('UTF-8//IGNORE', 'UTF-8')
-        comment = ic.iconv(comment)
-        key, val = comment.split(/=/, 2)
-        tag[key.downcase] = val
+        begin
+          key, val = comment.split(/=/, 2)
+          tag[key.downcase] = val
+        rescue Exception
+          # unparsable strings because of encoding
+        end
       end
       
       #framing bit = pio.read(1).unpack("C")[0] 
